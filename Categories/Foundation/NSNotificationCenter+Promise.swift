@@ -20,11 +20,11 @@ import PromiseKit
 */
 extension NSNotificationCenter {
     public class func _once(name: String) -> NotificationPromise {
-        return NSNotificationCenter.defaultCenter()._once(name)
+        return NSNotificationCenter.defaultCenter().once(name)
     }
 
-    public func _once(name: String) -> NotificationPromise {
-        let (promise, fulfill) = NotificationPromise._go()
+    public func once(name: String) -> NotificationPromise {
+        let (promise, fulfill) = NotificationPromise.go()
         let id = addObserverForName(name, object: nil, queue: nil, usingBlock: fulfill)
         promise.then(on: zalgo) { _ in self.removeObserver(id) }
         return promise
@@ -38,7 +38,7 @@ public class NotificationPromise: Promise<[NSObject: AnyObject]> {
         return parentPromise
     }
 
-    private class func _go() -> (NotificationPromise, (NSNotification) -> Void) {
+    private class func go() -> (NotificationPromise, (NSNotification) -> Void) {
         var fulfill: (([NSObject: AnyObject]) -> Void)!
         let promise = NotificationPromise { f, _ in fulfill = f }
         promise.parentPromise.then { fulfill($0.userInfo ?? [:]) }
