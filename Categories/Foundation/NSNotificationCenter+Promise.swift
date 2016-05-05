@@ -24,7 +24,7 @@ extension NSNotificationCenter {
     }
 
     public func _once(name: String) -> NotificationPromise {
-        let (promise, fulfill) = NotificationPromise.go()
+        let (promise, fulfill) = NotificationPromise._go()
         let id = addObserverForName(name, object: nil, queue: nil, usingBlock: fulfill)
         promise.then(on: zalgo) { _ in self.removeObserver(id) }
         return promise
